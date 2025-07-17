@@ -2,34 +2,37 @@
 <html lang="hu">
 <head>
   <meta charset="UTF-8">
-  <title>Egyszerű űrlap</title>
+  <title>Egyszerű űrlap 2</title>
 </head>
 <body>
-  <h2>Küldj be adatot</h2>
+  <h2>Űrlap – Név és Üzenet</h2>
+
   <form id="myForm">
-    <input type="text" name="nev" placeholder="Név" required><br><br>
-    <textarea name="uzenet" placeholder="Üzenet" required></textarea><br><br>
-    <button type="submit">Küldés</button>
+    <label for="nev">Név:</label><br>
+    <input type="text" id="nev" name="nev" required><br><br>
+
+    <label for="uzenet">Üzenet:</label><br>
+    <textarea id="uzenet" name="uzenet" rows="4" required></textarea><br><br>
+
+    <button type="submit">Beküldés</button>
   </form>
 
+  <p id="valasz"></p>
+
   <script>
-    const form = document.getElementById("myForm");
-
-    form.addEventListener("submit", async (e) => {
+    document.getElementById("myForm").addEventListener("submit", async function(e) {
       e.preventDefault();
-      const formData = new FormData(form);
-      const data = Object.fromEntries(formData.entries());
 
-      await fetch("https://script.google.com/macros/s/AKfycbzD_i3mCskL_gATfZj6SJa4E7u2epEJXO414RS7y8HHUR6i25UlIcqzye3bmtUvaY14/exec", {
+      const formData = new FormData(this);
+
+      const response = await fetch("https://script.google.com/macros/s/AKfycbzD_i3mCskL_gATfZj6SJa4E7u2epEJXO414RS7y8HHUR6i25UlIcqzye3bmtUvaY14/exec", {
         method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-          "Content-Type": "application/json"
-        }
+        body: formData
       });
 
-      alert("Sikeresen beküldve!");
-      form.reset();
+      const text = await response.text();
+      document.getElementById("valasz").innerText = "Válasz a szervertől: " + text;
+      this.reset();
     });
   </script>
 </body>
